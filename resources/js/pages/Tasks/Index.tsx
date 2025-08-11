@@ -1,10 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { type Task } from '@/types';
+import { toast } from "sonner"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -13,6 +13,19 @@ import {
 
 
 export default function Index({ tasks }: { tasks: Task[] }) {
+    const deleteTask = (id: number) => {
+        if(confirm("Are you sure?")) {
+            router.delete(route('tasks.destroy', { id }), {
+                onSuccess: () => {
+                    toast.success("Task deleted successfully.");
+                },
+                onError: () => {
+                    toast.error("Error deleting task.");
+                }
+            });
+        }
+    };
+
     return (
         <AppLayout>
             <Head title="Tasks" />
@@ -31,8 +44,8 @@ export default function Index({ tasks }: { tasks: Task[] }) {
                                 <TableCell>{task.name}</TableCell>
                                 <TableCell className="text-right">
                                     {/* Actions can be added here */}
-                                    <button className="text-blue-500 hover:underline">Edit</button>
-                                    <button className="text-red-500 hover:underline ml-2">Delete</button>
+                                    <button className="text-blue-500">Edit</button>
+                                    <button className="text-red-500 ms-3" onClick={() => deleteTask(task.id)}>Delete</button>
                                 </TableCell>
                             </TableRow>
                         ))}
